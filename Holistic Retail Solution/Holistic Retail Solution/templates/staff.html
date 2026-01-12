@@ -1,0 +1,84 @@
+{% extends 'base.html' %}
+{% block content %}
+<div class="text-center py-4">
+    <h2 class="display-6 mb-3">Staff Directory</h2>
+    <p class="lead mb-4">Meet your team and review their details at a glance.</p>
+</div>
+<div class="row justify-content-center mb-4">
+    <div class="col-lg-10">
+        <div class="card shadow-sm">
+            <div class="card-body">
+                <form class="row g-3 align-items-end" method="get">
+                    <div class="col-md-4">
+                        <label for="role" class="form-label">Role</label>
+                        <select class="form-select" id="role" name="role">
+                            <option value="">All Roles</option>
+                            <option value="Manager">Manager</option>
+                            <option value="Cashier">Cashier</option>
+                            <option value="Stock">Stock</option>
+                            <option value="Sales">Sales</option>
+                        </select>
+                    </div>
+                    <div class="col-md-4">
+                        <label for="pay_type" class="form-label">Pay Type</label>
+                        <select class="form-select" id="pay_type" name="pay_type">
+                            <option value="">All Types</option>
+                            <option value="Hourly">Hourly</option>
+                            <option value="Salary">Salary</option>
+                        </select>
+                    </div>
+                    <div class="col-md-4">
+                        <label for="name" class="form-label">Name</label>
+                        <input type="text" class="form-control" id="name" name="name" placeholder="Search by name">
+                    </div>
+                    <div class="col-12 text-end">
+                        <button type="submit" class="btn btn-primary">Filter</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+<div class="row justify-content-center">
+    <div class="col-lg-10">
+        <div class="card shadow-sm mb-4">
+            <div class="card-body">
+                <div class="table-responsive">
+                    <table class="table table-striped table-bordered align-middle mb-0">
+                        <thead class="table-primary">
+                            <tr>
+                                <th></th>
+                                <th>Name</th>
+                                <th>Role</th>
+                                <th>Contact Info</th>
+                                <th>Pay</th>
+                                <th>Pay Type</th>
+                                <th>Address</th>
+                                <th>Date of Birth</th>
+                                <th>Hire Date</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% for s in staff %}
+                            <tr>
+                                <td class="text-center align-middle">
+                                    <a href="/staff/{{ s.id }}" class="btn btn-outline-primary btn-sm">View Profile</a>
+                                </td>
+                                <td>{{ s.name }}</td>
+                                <td>{{ s.role }}</td>
+                                <td>{{ s.contact_info }}</td>
+                                <td>${{ '%.2f'|format(s.pay) }}</td>
+                                <td>{{ s.pay_type }}</td>
+                                <td>{{ s.address }}</td>
+                                <td>{{ s.dob }}</td>
+                                <td>{{ s.hire_date }}</td>
+                            </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

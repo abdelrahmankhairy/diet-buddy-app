@@ -1,0 +1,70 @@
+{% extends 'base.html' %}
+{% block title %}Revenue Management - Holistic Retail Solution{% endblock %}
+
+{% block content %}
+<div class="d-flex justify-content-between flex-wrap flex-md-nowrap align-items-center pt-3 pb-2 mb-3 border-bottom">
+    <h1 class="h2">Revenue Management</h1>
+</div>
+
+<div class="row">
+    <div class="col-md-6 mb-4">
+        <div class="card module-card h-100">
+            <div class="card-body text-center">
+                <div class="module-icon text-success">
+                    <i class="fas fa-calculator"></i>
+                </div>
+                <h5 class="card-title">Margin Calculation</h5>
+                <p class="card-text">Calculate profit margins and analyze pricing strategies.</p>
+                <a href="/revenue/margin" class="btn btn-success">Calculate Margins</a>
+            </div>
+        </div>
+    </div>
+
+    <div class="col-md-6 mb-4">
+        <div class="card module-card h-100">
+            <div class="card-body text-center">
+                <div class="module-icon text-primary">
+                    <i class="fas fa-chart-bar"></i>
+                </div>
+                <h5 class="card-title">Reports</h5>
+                <p class="card-text">Generate sales reports and revenue analytics.</p>
+                <a href="/revenue/reports" class="btn btn-primary">View Reports</a>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="row mt-4">
+    <div class="col-12">
+        <div class="card">
+            <div class="card-header">
+                <h5 class="mb-0">Quick Actions</h5>
+            </div>
+            <div class="card-body">
+                <div class="row">
+                    <div class="col-md-3 mb-3">
+                        <button class="btn btn-outline-success w-100" onclick="location.href='/revenue/margin'">
+                            <i class="fas fa-calculator me-2"></i>Calculate Margins
+                        </button>
+                    </div>
+                    <div class="col-md-3 mb-3">
+                        <button class="btn btn-outline-primary w-100" onclick="location.href='/revenue/reports'">
+                            <i class="fas fa-file-alt me-2"></i>Generate Report
+                        </button>
+                    </div>
+                    <div class="col-md-3 mb-3">
+                        <button class="btn btn-outline-info w-100">
+                            <i class="fas fa-chart-line me-2"></i>Sales Analytics
+                        </button>
+                    </div>
+                    <div class="col-md-3 mb-3">
+                        <button class="btn btn-outline-warning w-100">
+                            <i class="fas fa-download me-2"></i>Export Data
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

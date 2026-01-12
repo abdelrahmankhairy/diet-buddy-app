@@ -1,0 +1,217 @@
+{% extends 'base.html' %}
+{% block title %}Staff Management{% endblock %}
+
+{% block content %}
+<div class="d-flex justify-content-between flex-wrap flex-md-nowrap align-items-center pt-3 pb-2 mb-3 border-bottom">
+    <h1 class="h2">Staff Management</h1>
+    <div class="btn-toolbar mb-2 mb-md-0">
+        <button class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#addStaffModal">
+            <i class="fas fa-user-plus me-1"></i>Add Employee
+        </button>
+    </div>
+</div>
+
+<!-- Staff Cards -->
+<div class="row">
+    {% for staff_member in staff %}
+    <div class="col-md-6 col-lg-4 mb-4">
+        <div class="card h-100">
+            <div class="card-body">
+                <div class="d-flex align-items-center mb-3">
+                    <div class="bg-primary rounded-circle d-flex align-items-center justify-content-center me-3" style="width: 60px; height: 60px;">
+                        <i class="fas fa-user text-white fa-2x"></i>
+                    </div>
+                    <div>
+                        <h5 class="card-title mb-1">{{ staff_member.name }}</h5>
+                        <span class="badge bg-secondary">{{ staff_member.role }}</span>
+                    </div>
+                </div>
+
+                <div class="row mb-3">
+                    <div class="col-6">
+                        <small class="text-muted">Pay Type</small>
+                        <p class="mb-0">{{ staff_member.pay_type }}</p>
+                    </div>
+                    <div class="col-6">
+                        <small class="text-muted">Pay Rate</small>
+                        <p class="mb-0">
+                            {% if staff_member.pay_type == 'Salary' %}
+                            ${{ "{:,.0f}".format(staff_member.pay) }}/year
+                            {% else %}
+                            ${{ "{:.2f}".format(staff_member.pay) }}/hour
+                            {% endif %}
+                        </p>
+                    </div>
+                </div>
+
+                <div class="mb-3">
+                    <small class="text-muted">Contact</small>
+                    <p class="mb-0">{{ staff_member.contact_info }}</p>
+                </div>
+
+                <div class="mb-3">
+                    <small class="text-muted">Address</small>
+                    <p class="mb-0">{{ staff_member.address }}</p>
+                </div>
+
+                <div class="row mb-3">
+                    <div class="col-6">
+                        <small class="text-muted">DOB</small>
+                        <p class="mb-0">{{ staff_member.dob }}</p>
+                    </div>
+                    <div class="col-6">
+                        <small class="text-muted">Hire Date</small>
+                        <p class="mb-0">{{ staff_member.hire_date }}</p>
+                    </div>
+                </div>
+
+                <div class="d-grid gap-2">
+                    <a href="/staff/{{ staff_member.id }}" class="btn btn-outline-primary btn-sm">
+                        <i class="fas fa-eye me-1"></i>View Profile
+                    </a>
+                    <div class="btn-group btn-group-sm">
+                        <button class="btn btn-outline-secondary" title="Edit">
+                            <i class="fas fa-edit"></i>
+                        </button>
+                        <button class="btn btn-outline-info" title="Timesheet">
+                            <i class="fas fa-clock"></i>
+                        </button>
+                        <button class="btn btn-outline-success" title="Payroll">
+                            <i class="fas fa-money-bill"></i>
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    {% else %}
+    <div class="col-12">
+        <div class="text-center py-5">
+            <i class="fas fa-users fa-3x text-muted mb-3"></i>
+            <h4 class="text-muted">No Staff Members Found</h4>
+            <p class="text-muted">Add your first employee to get started.</p>
+            <button class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#addStaffModal">
+                <i class="fas fa-user-plus me-1"></i>Add First Employee
+            </button>
+        </div>
+    </div>
+    {% endfor %}
+</div>
+
+<!-- Add Staff Modal -->
+<div class="modal fade" id="addStaffModal" tabindex="-1">
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title">Add New Employee</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+            </div>
+            <div class="modal-body">
+                <form id="addStaffForm">
+                    <div class="row">
+                        <div class="col-md-6 mb-3">
+                            <label for="staffName" class="form-label">Full Name *</label>
+                            <input type="text" class="form-control" id="staffName" required>
+                        </div>
+                        <div class="col-md-6 mb-3">
+                            <label for="staffRole" class="form-label">Role *</label>
+                            <select class="form-select" id="staffRole" required>
+                                <option value="">Select Role</option>
+                                <option value="Store Manager">Store Manager</option>
+                                <option value="Cashier">Cashier</option>
+                                <option value="Sales Associate">Sales Associate</option>
+                                <option value="Inventory Specialist">Inventory Specialist</option>
+                                <option value="Supervisor">Supervisor</option>
+                            </select>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-md-6 mb-3">
+                            <label for="staffEmail" class="form-label">Email *</label>
+                            <input type="email" class="form-control" id="staffEmail" required>
+                        </div>
+                        <div class="col-md-6 mb-3">
+                            <label for="staffPhone" class="form-label">Phone *</label>
+                            <input type="tel" class="form-control" id="staffPhone" required>
+                        </div>
+                    </div>
+                    <div class="mb-3">
+                        <label for="staffAddress" class="form-label">Address</label>
+                        <textarea class="form-control" id="staffAddress" rows="2"></textarea>
+                    </div>
+                    <div class="row">
+                        <div class="col-md-6 mb-3">
+                            <label for="staffDOB" class="form-label">Date of Birth</label>
+                            <input type="date" class="form-control" id="staffDOB">
+                        </div>
+                        <div class="col-md-6 mb-3">
+                            <label for="staffHireDate" class="form-label">Hire Date *</label>
+                            <input type="date" class="form-control" id="staffHireDate" required>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-md-6 mb-3">
+                            <label for="staffPayType" class="form-label">Pay Type *</label>
+                            <select class="form-select" id="staffPayType" required>
+                                <option value="">Select Pay Type</option>
+                                <option value="Salary">Salary</option>
+                                <option value="Hourly">Hourly</option>
+                            </select>
+                        </div>
+                        <div class="col-md-6 mb-3">
+                            <label for="staffPay" class="form-label">Pay Rate *</label>
+                            <input type="number" class="form-control" id="staffPay" step="0.01" required>
+                        </div>
+                    </div>
+                </form>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+                <button type="button" class="btn btn-primary" onclick="saveStaff()">Save Employee</button>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block scripts %}
+<script>
+function saveStaff() {
+    const formData = {
+        name: document.getElementById('staffName').value,
+        role: document.getElementById('staffRole').value,
+        email: document.getElementById('staffEmail').value,
+        phone: document.getElementById('staffPhone').value,
+        address: document.getElementById('staffAddress').value,
+        dob: document.getElementById('staffDOB').value,
+        hire_date: document.getElementById('staffHireDate').value,
+        pay_type: document.getElementById('staffPayType').value,
+        pay: document.getElementById('staffPay').value,
+        contact_info: document.getElementById('staffEmail').value + ', ' + document.getElementById('staffPhone').value
+    };
+
+    // Validate form
+    if (!formData.name || !formData.role || !formData.email || !formData.phone || !formData.hire_date || !formData.pay_type || !formData.pay) {
+        alert('Please fill in all required fields');
+        return;
+    }
+
+    // Here you would typically send the data to the server
+    console.log('Staff data:', formData);
+
+    // Close modal and show success message
+    bootstrap.Modal.getInstance(document.getElementById('addStaffModal')).hide();
+    alert('Employee added successfully!');
+
+    // Reset form
+    document.getElementById('addStaffForm').reset();
+
+    // Reload page to show new employee
+    location.reload();
+}
+
+// Set maximum date for DOB and hire date
+document.getElementById('staffDOB').max = new Date().toISOString().split('T')[0];
+document.getElementById('staffHireDate').max = new Date().toISOString().split('T')[0];
+</script>
+{% endblock %}

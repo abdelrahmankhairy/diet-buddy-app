@@ -1,0 +1,710 @@
+{% extends 'base.html' %}
+{% block title %}Inventory - Holistic Retail Solution{% endblock %}
+
+{% block content %}
+<div class="d-flex justify-content-between flex-wrap flex-md-nowrap align-items-center pt-3 pb-2 mb-3 border-bottom">
+    <h1 class="h2">Inventory Management</h1>
+</div>
+
+<div class="row">
+    <div class="col-md-4 mb-4">
+        <div class="card module-card h-100">
+            <div class="card-body text-center">
+                <div class="module-icon text-primary">
+                    <i class="fas fa-chart-bar"></i>
+                </div>
+                <h5 class="card-title">Reports</h5>
+                <p class="card-text">View inventory reports, stock levels, and analytics.</p>
+                <a href="/inventory/reports" class="btn btn-primary">View Reports</a>
+            </div>
+        </div>
+    </div>
+
+    <div class="col-md-4 mb-4">
+        <div class="card module-card h-100">
+            <div class="card-body text-center">
+                <div class="module-icon text-warning">
+                    <i class="fas fa-calendar-check"></i>
+                </div>
+                <h5 class="card-title">Schedule</h5>
+                <p class="card-text">Manage inventory schedules and restocking plans.</p>
+                <a href="/inventory/schedule" class="btn btn-warning">View Schedule</a>
+            </div>
+        </div>
+    </div>
+
+    <div class="col-md-4 mb-4">
+        <div class="card module-card h-100">
+            <div class="card-body text-center">
+                <div class="module-icon text-success">
+                    <i class="fas fa-barcode"></i>
+                </div>
+                <h5 class="card-title">Scan & Input</h5>
+                <p class="card-text">Scan barcodes and input inventory items.</p>
+                <button class="btn btn-success" data-bs-toggle="modal" data-bs-target="#scannerModal">Start Scanning</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="row mt-4">
+    <div class="col-12">
+        <div class="card">
+            <div class="card-header">
+                <h5 class="mb-0">Quick Actions</h5>
+            </div>
+            <div class="card-body">
+                <div class="row">
+                    <div class="col-md-3 mb-3">
+                        <button class="btn btn-outline-primary w-100" data-bs-toggle="modal" data-bs-target="#scannerModal">
+                            <i class="fas fa-plus me-2"></i>Add New Item
+                        </button>
+                    </div>
+                    <div class="col-md-3 mb-3">
+                        <button class="btn btn-outline-secondary w-100" onclick="location.href='/inventory/reports'">
+                            <i class="fas fa-download me-2"></i>Export Report
+                        </button>
+                    </div>
+                    <div class="col-md-3 mb-3">
+                        <button class="btn btn-outline-info w-100" onclick="location.href='/inventory/schedule'">
+                            <i class="fas fa-clock me-2"></i>Set Reminders
+                        </button>
+                    </div>
+                    <div class="col-md-3 mb-3">
+                        <button class="btn btn-outline-warning w-100" onclick="location.href='/inventory/reports'">
+                            <i class="fas fa-exclamation-triangle me-2"></i>Low Stock Alert
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Scanner Modal (Popup 1) -->
+<div class="modal fade" id="scannerModal" tabindex="-1" aria-labelledby="scannerModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="scannerModalLabel">
+                    <i class="fas fa-barcode me-2"></i>Barcode Scanner
+                </h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <div class="row">
+                    <!-- Scanner Interface -->
+                    <div class="col-md-6">
+                        <div class="card">
+                            <div class="card-header">
+                                <h6 class="mb-0">Scanner Interface</h6>
+                            </div>
+                            <div class="card-body">
+                                <div class="text-center mb-4">
+                                    <div class="scanner-interface p-4 border rounded bg-light">
+                                        <i class="fas fa-barcode fa-3x text-primary mb-3"></i>
+                                        <h5>Ready to Scan</h5>
+                                        <p class="text-muted">Position barcode under scanner or enter manually</p>
+                                    </div>
+                                </div>
+
+                                <div class="mb-3">
+                                    <label for="barcodeInput" class="form-label">Manual Barcode Entry</label>
+                                    <div class="input-group">
+                                        <input type="text" class="form-control" id="barcodeInput" placeholder="Enter barcode manually">
+                                        <button class="btn btn-primary" type="button" onclick="scanBarcode()">
+                                            <i class="fas fa-search"></i> Scan
+                                        </button>
+                                    </div>
+                                </div>
+
+                                <div class="alert alert-info">
+                                    <i class="fas fa-info-circle me-2"></i>
+                                    <strong>Tip:</strong> You can also use your device's camera for barcode scanning in future updates.
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Scanned Items List -->
+                    <div class="col-md-6">
+                        <div class="card">
+                            <div class="card-header d-flex justify-content-between align-items-center">
+                                <h6 class="mb-0">Inventory List</h6>
+                                <div>
+                                    <button class="btn btn-danger btn-sm me-2" onclick="resetList()">
+                                        <i class="fas fa-trash me-1"></i>Reset
+                                    </button>
+                                    <button class="btn btn-primary btn-sm" onclick="addInvoice()">
+                                        <i class="fas fa-file-invoice me-1"></i>Add Invoice
+                                    </button>
+                                </div>
+                            </div>
+                            <div class="card-body">
+                                <div id="scannedItemsList" style="max-height: 400px; overflow-y: auto;">
+                                    <div class="text-center text-muted py-4">
+                                        <i class="fas fa-box-open fa-2x mb-2"></i>
+                                        <p>No items scanned yet</p>
+                                        <small>This list updates every time a staff member scans a barcode item for inventory</small>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                <button type="button" class="btn btn-success" onclick="saveInventory()">
+                    <i class="fas fa-save me-1"></i>Save Inventory
+                </button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Item Found Popup (Popup 2) -->
+<div class="modal fade" id="itemFoundModal" tabindex="-1">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title">Item Found!</h5>
+                <div>
+                    <button class="btn btn-outline-primary btn-sm me-2" onclick="editItem()">
+                        <i class="fas fa-edit"></i> Edit
+                    </button>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                </div>
+            </div>
+            <div class="modal-body">
+                <div class="row">
+                    <div class="col-md-4 text-center">
+                        <div class="bg-light rounded p-3 mb-3">
+                            <i class="fas fa-image fa-3x text-muted"></i>
+                            <p class="text-muted mt-2 mb-0">ITEM IMAGE</p>
+                            <small class="text-muted">Coming Soon! Feature to come in a later stage for storage optimization</small>
+                        </div>
+                    </div>
+                    <div class="col-md-8">
+                        <h6 id="itemName">Item Name</h6>
+                        <p class="text-muted mb-1">Supplier: <span id="itemSupplier">Supplier Name</span></p>
+                        <p class="text-muted mb-1">Current Stock: <span id="itemQuantity">0</span></p>
+                        <p class="text-muted mb-1">Price: $<span id="itemPrice">0.00</span></p>
+
+                        <div class="mt-3">
+                            <label class="form-label">QUANTITY</label>
+                            <div class="input-group" style="max-width: 150px;">
+                                <button class="btn btn-outline-secondary" type="button" onclick="adjustQuantity(-1)">-</button>
+                                <input type="number" class="form-control text-center" id="quantityInput" value="0" min="0">
+                                <button class="btn btn-outline-secondary" type="button" onclick="adjustQuantity(1)">+</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+                <button type="button" class="btn btn-primary" onclick="addToScannedList()">Add to List</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Item Not Found Popup (Popup 3) -->
+<div class="modal fade" id="itemNotFoundModal" tabindex="-1">
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title">Item Not Found! Add Info.</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" title="Exit"></button>
+            </div>
+            <div class="modal-body">
+                <p class="text-muted mb-3">Includes all details necessary to add products.</p>
+                <form id="newItemForm">
+                    <div class="row">
+                        <div class="col-md-6 mb-3">
+                            <label for="newItemName" class="form-label">Item Name *</label>
+                            <input type="text" class="form-control" id="newItemName" required>
+                        </div>
+                        <div class="col-md-6 mb-3">
+                            <label for="newItemBarcode" class="form-label">Barcode *</label>
+                            <input type="text" class="form-control" id="newItemBarcode" required>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-md-6 mb-3">
+                            <label for="newItemSupplier" class="form-label">Supplier</label>
+                            <input type="text" class="form-control" id="newItemSupplier" placeholder="#Supplier">
+                        </div>
+                        <div class="col-md-6 mb-3">
+                            <label for="newItemUnit" class="form-label">Unit of Measure</label>
+                            <select class="form-select" id="newItemUnit">
+                                <option value="">#UoM</option>
+                                <option value="pcs">Pieces</option>
+                                <option value="kg">Kilograms</option>
+                                <option value="l">Liters</option>
+                                <option value="m">Meters</option>
+                            </select>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-md-6 mb-3">
+                            <label for="newItemDepartment" class="form-label">Department</label>
+                            <select class="form-select" id="newItemDepartment">
+                                <option value="">#Department</option>
+                                <option value="electronics">Electronics</option>
+                                <option value="clothing">Clothing</option>
+                                <option value="food">Food & Beverages</option>
+                                <option value="home">Home & Garden</option>
+                            </select>
+                        </div>
+                        <div class="col-md-6 mb-3">
+                            <label for="newItemPrice" class="form-label">Price *</label>
+                            <input type="number" class="form-control" id="newItemPrice" step="0.01" required>
+                        </div>
+                    </div>
+                </form>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+                <button type="button" class="btn btn-primary" onclick="saveNewItem()">Save Item</button>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block scripts %}
+<script>
+let scannedItems = [];
+let currentBarcode = '';
+let currentQuantity = 0;
+let currentItem = null;
+
+function scanBarcode() {
+    const barcode = document.getElementById('barcodeInput').value.trim();
+    if (!barcode) {
+        showAlert('Please enter a barcode', 'warning');
+        return;
+    }
+
+    // Validate barcode format (basic validation)
+    if (barcode.length < 8) {
+        showAlert('Barcode must be at least 8 characters long', 'warning');
+        return;
+    }
+
+    currentBarcode = barcode;
+
+    // Show loading state
+    const scanButton = document.querySelector('button[onclick="scanBarcode()"]');
+    const originalText = scanButton.innerHTML;
+    scanButton.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Scanning...';
+    scanButton.disabled = true;
+
+    // Simulate API call to check if item exists
+    fetch('/api/inventory/scan', {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({ barcode: barcode })
+    })
+    .then(response => response.json())
+    .then(data => {
+        if (data.found) {
+            currentItem = data.item;
+            showItemFound(data.item);
+            showAlert(`Item found: ${data.item.name}`, 'success');
+        } else {
+            showItemNotFound();
+            showAlert('Item not found. You can add it as a new item.', 'info');
+        }
+    })
+    .catch(error => {
+        console.error('Error:', error);
+        showAlert('Error scanning barcode. Please try again.', 'danger');
+    })
+    .finally(() => {
+        // Reset button state
+        scanButton.innerHTML = originalText;
+        scanButton.disabled = false;
+    });
+}
+
+function showItemFound(item) {
+    document.getElementById('itemName').textContent = item.name;
+    document.getElementById('itemSupplier').textContent = item.supplier;
+    document.getElementById('itemQuantity').textContent = item.quantity;
+    document.getElementById('itemPrice').textContent = item.price ? `$${parseFloat(item.price).toFixed(2)}` : '$0.00';
+    document.getElementById('quantityInput').value = 1;
+    currentQuantity = 1;
+
+    const modal = new bootstrap.Modal(document.getElementById('itemFoundModal'));
+    modal.show();
+}
+
+function showItemNotFound() {
+    document.getElementById('newItemBarcode').value = currentBarcode;
+    const modal = new bootstrap.Modal(document.getElementById('itemNotFoundModal'));
+    modal.show();
+}
+
+function adjustQuantity(change) {
+    currentQuantity = Math.max(0, currentQuantity + change);
+    document.getElementById('quantityInput').value = currentQuantity;
+}
+
+function addToScannedList() {
+    const quantity = parseInt(document.getElementById('quantityInput').value);
+
+    if (quantity <= 0) {
+        showAlert('Please enter a valid quantity', 'warning');
+        return;
+    }
+
+    // Add current item to scanned list
+    const item = {
+        id: currentItem.id,
+        name: currentItem.name,
+        supplier: currentItem.supplier,
+        quantity: quantity,
+        price: currentItem.price,
+        barcode: currentBarcode,
+        department: currentItem.department,
+        unit_of_measure: currentItem.unit_of_measure
+    };
+
+    // Check if item already exists in scanned list
+    const existingIndex = scannedItems.findIndex(scanned => scanned.id === item.id);
+    if (existingIndex >= 0) {
+        scannedItems[existingIndex].quantity += quantity;
+        showAlert(`Updated quantity for ${item.name}`, 'info');
+    } else {
+        scannedItems.push(item);
+        showAlert(`Added ${item.name} to inventory list`, 'success');
+    }
+
+    updateScannedItemsList();
+
+    // Close modal and clear input
+    bootstrap.Modal.getInstance(document.getElementById('itemFoundModal')).hide();
+    document.getElementById('barcodeInput').value = '';
+    currentBarcode = '';
+    currentQuantity = 0;
+    currentItem = null;
+}
+
+function saveNewItem() {
+    const form = document.getElementById('newItemForm');
+    if (!form.checkValidity()) {
+        form.reportValidity();
+        return;
+    }
+
+    const formData = {
+        name: document.getElementById('newItemName').value,
+        barcode: document.getElementById('newItemBarcode').value,
+        supplier_id: document.getElementById('newItemSupplier').value || 'Unknown Supplier',
+        unit_of_measure: document.getElementById('newItemUnit').value || 'pcs',
+        department: document.getElementById('newItemDepartment').value || 'General',
+        price: document.getElementById('newItemPrice').value,
+        cost_price: document.getElementById('newItemPrice').value,
+        quantity: 0
+    };
+
+    // Show loading state
+    const saveButton = document.querySelector('button[onclick="saveNewItem()"]');
+    const originalText = saveButton.innerHTML;
+    saveButton.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Saving...';
+    saveButton.disabled = true;
+
+    fetch('/api/inventory/add', {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(formData)
+    })
+    .then(response => response.json())
+    .then(data => {
+        if (data.success) {
+            // Add to scanned list
+            const item = {
+                id: data.item_id,
+                name: formData.name,
+                supplier: formData.supplier_id,
+                quantity: 1,
+                price: formData.price,
+                barcode: formData.barcode,
+                department: formData.department,
+                unit_of_measure: formData.unit_of_measure
+            };
+
+            scannedItems.push(item);
+            updateScannedItemsList();
+
+            // Close modal and clear form
+            bootstrap.Modal.getInstance(document.getElementById('itemNotFoundModal')).hide();
+            form.reset();
+            document.getElementById('barcodeInput').value = '';
+            currentBarcode = '';
+            currentItem = null;
+
+            showAlert('Item added successfully!', 'success');
+        } else {
+            showAlert(data.error || 'Error adding item', 'danger');
+        }
+    })
+    .catch(error => {
+        console.error('Error:', error);
+        showAlert('Error adding item. Please try again.', 'danger');
+    })
+    .finally(() => {
+        // Reset button state
+        saveButton.innerHTML = originalText;
+        saveButton.disabled = false;
+    });
+}
+
+function updateScannedItemsList() {
+    const container = document.getElementById('scannedItemsList');
+
+    if (scannedItems.length === 0) {
+        container.innerHTML = `
+            <div class="text-center text-muted py-4">
+                <i class="fas fa-box-open fa-2x mb-2"></i>
+                <p>No items scanned yet</p>
+                <small>This list updates every time a staff member scans a barcode item for inventory</small>
+            </div>
+        `;
+        return;
+    }
+
+    let html = '';
+    let totalValue = 0;
+
+    scannedItems.forEach((item, index) => {
+        const itemValue = (parseFloat(item.price) * item.quantity).toFixed(2);
+        totalValue += parseFloat(itemValue);
+
+        html += `
+            <div class="card mb-2">
+                <div class="card-body p-3">
+                    <div class="row align-items-center">
+                        <div class="col-md-7">
+                            <h6 class="mb-1">${item.name}</h6>
+                            <small class="text-muted">
+                                <i class="fas fa-barcode me-1"></i>${item.barcode} |
+                                <i class="fas fa-building me-1"></i>${item.supplier} |
+                                <i class="fas fa-tag me-1"></i>${item.department}
+                            </small>
+                        </div>
+                        <div class="col-md-3 text-center">
+                            <div class="d-flex align-items-center justify-content-center">
+                                <button class="btn btn-sm btn-outline-secondary me-2" onclick="adjustScannedQuantity(${index}, -1)">-</button>
+                                <span class="fw-bold">${item.quantity}</span>
+                                <button class="btn btn-sm btn-outline-secondary ms-2" onclick="adjustScannedQuantity(${index}, 1)">+</button>
+                            </div>
+                            <small class="text-muted">$${parseFloat(item.price).toFixed(2)} each</small>
+                        </div>
+                        <div class="col-md-2 text-end">
+                            <div class="mb-1">
+                                <strong>$${itemValue}</strong>
+                            </div>
+                            <button class="btn btn-sm btn-outline-danger" onclick="removeItem(${index})" title="Remove item">
+                                <i class="fas fa-trash"></i>
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        `;
+    });
+
+    // Add summary
+    html += `
+        <div class="card mt-3 bg-light">
+            <div class="card-body p-3">
+                <div class="row align-items-center">
+                    <div class="col-md-6">
+                        <h6 class="mb-0">Summary</h6>
+                        <small class="text-muted">${scannedItems.length} items scanned</small>
+                    </div>
+                    <div class="col-md-6 text-end">
+                        <h5 class="mb-0 text-primary">Total: $${totalValue.toFixed(2)}</h5>
+                    </div>
+                </div>
+            </div>
+        </div>
+    `;
+
+    container.innerHTML = html;
+}
+
+function adjustScannedQuantity(index, change) {
+    const newQuantity = Math.max(0, scannedItems[index].quantity + change);
+    if (newQuantity === 0) {
+        removeItem(index);
+    } else {
+        scannedItems[index].quantity = newQuantity;
+        updateScannedItemsList();
+    }
+}
+
+function removeItem(index) {
+    const itemName = scannedItems[index].name;
+    scannedItems.splice(index, 1);
+    updateScannedItemsList();
+    showAlert(`Removed ${itemName} from list`, 'info');
+}
+
+function resetList() {
+    if (scannedItems.length === 0) {
+        showAlert('No items to clear', 'info');
+        return;
+    }
+
+    if (confirm('Are you sure you want to clear all scanned items?')) {
+        scannedItems = [];
+        updateScannedItemsList();
+        showAlert('Inventory list cleared', 'success');
+    }
+}
+
+function addInvoice() {
+    if (scannedItems.length === 0) {
+        showAlert('No items to add to invoice', 'warning');
+        return;
+    }
+
+    // Calculate invoice details
+    const totalItems = scannedItems.reduce((sum, item) => sum + item.quantity, 0);
+    const totalValue = scannedItems.reduce((sum, item) => sum + (parseFloat(item.price) * item.quantity), 0);
+
+    const invoiceDetails = scannedItems.map(item =>
+        `${item.name} (${item.quantity} x $${parseFloat(item.price).toFixed(2)})`
+    ).join('\n');
+
+    alert(`Invoice Generated!\n\nItems:\n${invoiceDetails}\n\nTotal Items: ${totalItems}\nTotal Value: $${totalValue.toFixed(2)}`);
+}
+
+function saveInventory() {
+    if (scannedItems.length === 0) {
+        showAlert('No items to save', 'warning');
+        return;
+    }
+
+    // Prepare bulk update data
+    const updateData = scannedItems.map(item => ({
+        id: item.id,
+        quantity_change: item.quantity
+    }));
+
+    // Show loading state
+    const saveButton = document.querySelector('button[onclick="saveInventory()"]');
+    const originalText = saveButton.innerHTML;
+    saveButton.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Saving...';
+    saveButton.disabled = true;
+
+    fetch('/api/inventory/bulk-update', {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({ items: updateData })
+    })
+    .then(response => response.json())
+    .then(data => {
+        if (data.success) {
+            showAlert('Inventory updated successfully!', 'success');
+            scannedItems = [];
+            updateScannedItemsList();
+            bootstrap.Modal.getInstance(document.getElementById('scannerModal')).hide();
+        } else {
+            showAlert('Error updating inventory', 'danger');
+        }
+    })
+    .catch(error => {
+        console.error('Error:', error);
+        showAlert('Error updating inventory. Please try again.', 'danger');
+    })
+    .finally(() => {
+        // Reset button state
+        saveButton.innerHTML = originalText;
+        saveButton.disabled = false;
+    });
+}
+
+function editItem() {
+    showAlert('Edit functionality coming soon!', 'info');
+}
+
+function showAlert(message, type) {
+    // Create alert element
+    const alertDiv = document.createElement('div');
+    alertDiv.className = `alert alert-${type} alert-dismissible fade show position-fixed`;
+    alertDiv.style.cssText = 'top: 20px; right: 20px; z-index: 9999; min-width: 300px;';
+    alertDiv.innerHTML = `
+        ${message}
+        <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+    `;
+
+    // Add to page
+    document.body.appendChild(alertDiv);
+
+    // Auto-remove after 3 seconds
+    setTimeout(() => {
+        if (alertDiv.parentNode) {
+            alertDiv.remove();
+        }
+    }, 3000);
+}
+
+// Auto-focus on barcode input when scanner modal opens
+document.getElementById('scannerModal').addEventListener('shown.bs.modal', function () {
+    document.getElementById('barcodeInput').focus();
+});
+
+// Allow Enter key to trigger scan
+document.getElementById('barcodeInput').addEventListener('keypress', function(e) {
+    if (e.key === 'Enter') {
+        scanBarcode();
+    }
+});
+
+// Handle quantity input changes
+document.getElementById('quantityInput').addEventListener('change', function(e) {
+    currentQuantity = parseInt(e.target.value) || 0;
+});
+
+// Sample barcodes for testing
+function addSampleBarcodes() {
+    const sampleBarcodes = [
+        '049000006000', // Coca-Cola
+        '012000001000', // Pepsi
+        '012000000123', // Marlboro
+        '012000000200', // OLG Lotto
+        '028400090000', // Doritos
+        '040000000000'  // Snickers
+    ];
+
+    const barcodeInput = document.getElementById('barcodeInput');
+    const randomBarcode = sampleBarcodes[Math.floor(Math.random() * sampleBarcodes.length)];
+    barcodeInput.value = randomBarcode;
+    scanBarcode();
+}
+
+// Add sample barcode button for testing
+document.addEventListener('DOMContentLoaded', function() {
+    const scannerCard = document.querySelector('.scanner-interface');
+    if (scannerCard) {
+        const testButton = document.createElement('button');
+        testButton.className = 'btn btn-outline-primary btn-sm mt-2';
+        testButton.innerHTML = '<i class="fas fa-magic me-1"></i>Test with Sample Barcode';
+        testButton.onclick = addSampleBarcodes;
+        scannerCard.appendChild(testButton);
+    }
+});
+</script>
+{% endblock %}

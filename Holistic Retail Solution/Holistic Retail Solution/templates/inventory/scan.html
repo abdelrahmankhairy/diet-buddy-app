@@ -1,0 +1,366 @@
+{% extends 'base.html' %}
+{% block title %}Scan & Input - Inventory{% endblock %}
+
+{% block content %}
+<div class="d-flex justify-content-between flex-wrap flex-md-nowrap align-items-center pt-3 pb-2 mb-3 border-bottom">
+    <h1 class="h2">Scan & Input</h1>
+    <div class="btn-toolbar mb-2 mb-md-0">
+        <button class="btn btn-danger me-2" onclick="resetList()">
+            <i class="fas fa-trash me-1"></i>Reset List
+        </button>
+        <button class="btn btn-primary" onclick="addInvoice()">
+            <i class="fas fa-file-invoice me-1"></i>Add Invoice
+        </button>
+    </div>
+</div>
+
+<div class="row">
+    <!-- Scanner Interface -->
+    <div class="col-md-6">
+        <div class="card">
+            <div class="card-header">
+                <h5 class="mb-0">Barcode Scanner</h5>
+            </div>
+            <div class="card-body">
+                <div class="text-center mb-4">
+                    <div class="scanner-interface p-4 border rounded">
+                        <i class="fas fa-barcode fa-3x text-primary mb-3"></i>
+                        <h5>Ready to Scan</h5>
+                        <p class="text-muted">Position barcode under scanner or enter manually</p>
+                    </div>
+                </div>
+
+                <div class="mb-3">
+                    <label for="barcodeInput" class="form-label">Manual Barcode Entry</label>
+                    <div class="input-group">
+                        <input type="text" class="form-control" id="barcodeInput" placeholder="Enter barcode manually">
+                        <button class="btn btn-primary" type="button" onclick="scanBarcode()">
+                            <i class="fas fa-search"></i> Scan
+                        </button>
+                    </div>
+                </div>
+
+                <div class="alert alert-info">
+                    <i class="fas fa-info-circle me-2"></i>
+                    <strong>Tip:</strong> You can also use your device's camera for barcode scanning in future updates.
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Scanned Items List -->
+    <div class="col-md-6">
+        <div class="card">
+            <div class="card-header">
+                <h5 class="mb-0">Scanned Items</h5>
+            </div>
+            <div class="card-body">
+                <div id="scannedItemsList">
+                    <div class="text-center text-muted py-4">
+                        <i class="fas fa-box-open fa-2x mb-2"></i>
+                        <p>No items scanned yet</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Item Found Popup -->
+<div class="modal fade" id="itemFoundModal" tabindex="-1">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title">Item Found</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+            </div>
+            <div class="modal-body">
+                <div class="row">
+                    <div class="col-md-4 text-center">
+                        <img id="itemImage" src="https://via.placeholder.com/100" class="img-fluid rounded" alt="Item Image">
+                    </div>
+                    <div class="col-md-8">
+                        <h6 id="itemName"></h6>
+                        <p class="text-muted mb-1">Supplier: <span id="itemSupplier"></span></p>
+                        <p class="text-muted mb-1">Current Stock: <span id="itemQuantity"></span></p>
+                        <p class="text-muted mb-1">Price: $<span id="itemPrice"></span></p>
+                    </div>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                <button type="button" class="btn btn-primary" onclick="addToScannedList()">Add to List</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Item Not Found Popup -->
+<div class="modal fade" id="itemNotFoundModal" tabindex="-1">
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title">Add New Item</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+            </div>
+            <div class="modal-body">
+                <form id="newItemForm">
+                    <div class="row">
+                        <div class="col-md-6 mb-3">
+                            <label for="newItemName" class="form-label">Item Name *</label>
+                            <input type="text" class="form-control" id="newItemName" required>
+                        </div>
+                        <div class="col-md-6 mb-3">
+                            <label for="newItemBarcode" class="form-label">Barcode *</label>
+                            <input type="text" class="form-control" id="newItemBarcode" required>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-md-6 mb-3">
+                            <label for="newItemSupplier" class="form-label">Supplier</label>
+                            <select class="form-select" id="newItemSupplier">
+                                <option value="">Select Supplier</option>
+                                <option value="1">Supplier A</option>
+                                <option value="2">Supplier B</option>
+                                <option value="3">Supplier C</option>
+                            </select>
+                        </div>
+                        <div class="col-md-6 mb-3">
+                            <label for="newItemUnit" class="form-label">Unit of Measure</label>
+                            <select class="form-select" id="newItemUnit">
+                                <option value="pcs">Pieces</option>
+                                <option value="kg">Kilograms</option>
+                                <option value="l">Liters</option>
+                                <option value="m">Meters</option>
+                            </select>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-md-6 mb-3">
+                            <label for="newItemDepartment" class="form-label">Department</label>
+                            <select class="form-select" id="newItemDepartment">
+                                <option value="">Select Department</option>
+                                <option value="electronics">Electronics</option>
+                                <option value="clothing">Clothing</option>
+                                <option value="food">Food & Beverages</option>
+                                <option value="home">Home & Garden</option>
+                            </select>
+                        </div>
+                        <div class="col-md-6 mb-3">
+                            <label for="newItemPrice" class="form-label">Price *</label>
+                            <input type="number" class="form-control" id="newItemPrice" step="0.01" required>
+                        </div>
+                    </div>
+                </form>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+                <button type="button" class="btn btn-primary" onclick="saveNewItem()">Save Item</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+{% endblock %}
+
+{% block scripts %}
+<script>
+let scannedItems = [];
+let currentBarcode = '';
+
+function scanBarcode() {
+    const barcode = document.getElementById('barcodeInput').value.trim();
+    if (!barcode) {
+        alert('Please enter a barcode');
+        return;
+    }
+
+    currentBarcode = barcode;
+
+    // Simulate API call to check if item exists
+    fetch('/api/inventory/scan', {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({ barcode: barcode })
+    })
+    .then(response => response.json())
+    .then(data => {
+        if (data.found) {
+            showItemFound(data.item);
+        } else {
+            showItemNotFound();
+        }
+    })
+    .catch(error => {
+        console.error('Error:', error);
+        // For demo purposes, show item not found
+        showItemNotFound();
+    });
+}
+
+function showItemFound(item) {
+    document.getElementById('itemName').textContent = item.name;
+    document.getElementById('itemSupplier').textContent = item.supplier;
+    document.getElementById('itemQuantity').textContent = item.quantity;
+    document.getElementById('itemPrice').textContent = item.price || 'N/A';
+    if (item.image_url) {
+        document.getElementById('itemImage').src = item.image_url;
+    }
+
+    const modal = new bootstrap.Modal(document.getElementById('itemFoundModal'));
+    modal.show();
+}
+
+function showItemNotFound() {
+    document.getElementById('newItemBarcode').value = currentBarcode;
+    const modal = new bootstrap.Modal(document.getElementById('itemNotFoundModal'));
+    modal.show();
+}
+
+function addToScannedList() {
+    // Add current item to scanned list
+    const item = {
+        id: Date.now(),
+        name: document.getElementById('itemName').textContent,
+        supplier: document.getElementById('itemSupplier').textContent,
+        quantity: document.getElementById('itemQuantity').textContent,
+        price: document.getElementById('itemPrice').textContent,
+        barcode: currentBarcode
+    };
+
+    scannedItems.push(item);
+    updateScannedItemsList();
+
+    // Close modal and clear input
+    bootstrap.Modal.getInstance(document.getElementById('itemFoundModal')).hide();
+    document.getElementById('barcodeInput').value = '';
+    currentBarcode = '';
+}
+
+function saveNewItem() {
+    const formData = {
+        name: document.getElementById('newItemName').value,
+        barcode: document.getElementById('newItemBarcode').value,
+        supplier_id: document.getElementById('newItemSupplier').value,
+        unit_of_measure: document.getElementById('newItemUnit').value,
+        department: document.getElementById('newItemDepartment').value,
+        price: document.getElementById('newItemPrice').value,
+        cost_price: document.getElementById('newItemPrice').value,
+        quantity: 0
+    };
+
+    fetch('/api/inventory/add', {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(formData)
+    })
+    .then(response => response.json())
+    .then(data => {
+        if (data.success) {
+            // Add to scanned list
+            const item = {
+                id: data.item_id,
+                name: formData.name,
+                supplier: 'New Supplier',
+                quantity: 0,
+                price: formData.price,
+                barcode: formData.barcode
+            };
+
+            scannedItems.push(item);
+            updateScannedItemsList();
+
+            // Close modal and clear form
+            bootstrap.Modal.getInstance(document.getElementById('itemNotFoundModal')).hide();
+            document.getElementById('newItemForm').reset();
+            document.getElementById('barcodeInput').value = '';
+            currentBarcode = '';
+
+            alert('Item added successfully!');
+        }
+    })
+    .catch(error => {
+        console.error('Error:', error);
+        alert('Error adding item');
+    });
+}
+
+function updateScannedItemsList() {
+    const container = document.getElementById('scannedItemsList');
+
+    if (scannedItems.length === 0) {
+        container.innerHTML = `
+            <div class="text-center text-muted py-4">
+                <i class="fas fa-box-open fa-2x mb-2"></i>
+                <p>No items scanned yet</p>
+            </div>
+        `;
+        return;
+    }
+
+    let html = '';
+    scannedItems.forEach((item, index) => {
+        html += `
+            <div class="card mb-2">
+                <div class="card-body p-3">
+                    <div class="row align-items-center">
+                        <div class="col-md-8">
+                            <h6 class="mb-1">${item.name}</h6>
+                            <small class="text-muted">
+                                Supplier: ${item.supplier} |
+                                Stock: ${item.quantity} |
+                                Price: $${item.price}
+                            </small>
+                        </div>
+                        <div class="col-md-4 text-end">
+                            <button class="btn btn-sm btn-outline-danger" onclick="removeItem(${index})">
+                                <i class="fas fa-trash"></i>
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        `;
+    });
+
+    container.innerHTML = html;
+}
+
+function removeItem(index) {
+    scannedItems.splice(index, 1);
+    updateScannedItemsList();
+}
+
+function resetList() {
+    if (confirm('Are you sure you want to clear all scanned items?')) {
+        scannedItems = [];
+        updateScannedItemsList();
+    }
+}
+
+function addInvoice() {
+    if (scannedItems.length === 0) {
+        alert('No items to add to invoice');
+        return;
+    }
+
+    alert('Invoice functionality coming soon!');
+}
+
+// Auto-focus on barcode input
+document.addEventListener('DOMContentLoaded', function() {
+    document.getElementById('barcodeInput').focus();
+
+    // Allow Enter key to trigger scan
+    document.getElementById('barcodeInput').addEventListener('keypress', function(e) {
+        if (e.key === 'Enter') {
+            scanBarcode();
+        }
+    });
+});
+</script>
+{% endblock %}

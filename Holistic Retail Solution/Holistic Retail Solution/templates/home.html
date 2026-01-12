@@ -1,56 +1,87 @@
 {% extends 'base.html' %}
+{% block title %}Home - Holistic Retail Solution{% endblock %}
+
 {% block content %}
 <div class="text-center py-5">
     <h1 class="display-4 mb-3">Welcome to Holistic Retail Solution</h1>
-    <p class="lead mb-4">Manage your retail business with ease: Orders, Inventory, Suppliers, Staff, Sales, Merchandising, and Accounting—all in one place.</p>
+    <p class="lead mb-5">Manage your retail business with ease: Inventory, Human Resources, Order Scheduling, Supplier Management, and Revenue Management—all in one place.</p>
+
     <div class="row justify-content-center">
-        <div class="col-md-2 mb-3">
-            <div class="card shadow-sm h-100">
-                <div class="card-body">
-                    <h5 class="card-title">Orders</h5>
-                    <p class="card-text">Track and manage customer orders.</p>
+        <div class="col-md-4 col-lg-3 mb-4">
+            <a href="/inventory" class="text-decoration-none">
+                <div class="card module-card h-100 text-center">
+                    <div class="card-body">
+                        <div class="module-icon text-primary">
+                            <i class="fas fa-boxes"></i>
+                        </div>
+                        <h5 class="card-title">Inventory</h5>
+                        <p class="card-text">Monitor stock levels, scan barcodes, and manage product inventory.</p>
+                    </div>
                 </div>
-            </div>
+            </a>
         </div>
-        <div class="col-md-2 mb-3">
-            <div class="card shadow-sm h-100">
-                <div class="card-body">
-                    <h5 class="card-title">Inventory</h5>
-                    <p class="card-text">Monitor stock and product levels.</p>
+
+        <div class="col-md-4 col-lg-3 mb-4">
+            <a href="/hr" class="text-decoration-none">
+                <div class="card module-card h-100 text-center">
+                    <div class="card-body">
+                        <div class="module-icon text-success">
+                            <i class="fas fa-users"></i>
+                        </div>
+                        <h5 class="card-title">Human Resources</h5>
+                        <p class="card-text">Manage staff, payroll, and timesheets for your team.</p>
+                    </div>
                 </div>
-            </div>
+            </a>
         </div>
-        <div class="col-md-2 mb-3">
-            <div class="card shadow-sm h-100">
-                <div class="card-body">
-                    <h5 class="card-title">Suppliers</h5>
-                    <p class="card-text">Manage supplier relationships.</p>
+
+        <div class="col-md-4 col-lg-3 mb-4">
+            <a href="/orders" class="text-decoration-none">
+                <div class="card module-card h-100 text-center">
+                    <div class="card-body">
+                        <div class="module-icon text-warning">
+                            <i class="fas fa-calendar-alt"></i>
+                        </div>
+                        <h5 class="card-title">Order Schedule</h5>
+                        <p class="card-text">Manage supplier orders, contracts, and pricing schedules.</p>
+                    </div>
                 </div>
-            </div>
+            </a>
         </div>
-        <div class="col-md-2 mb-3">
-            <div class="card shadow-sm h-100">
-                <div class="card-body">
-                    <h5 class="card-title">Staff</h5>
-                    <p class="card-text">Oversee your team and roles.</p>
+
+        <div class="col-md-4 col-lg-3 mb-4">
+            <a href="/suppliers" class="text-decoration-none">
+                <div class="card module-card h-100 text-center">
+                    <div class="card-body">
+                        <div class="module-icon text-info">
+                            <i class="fas fa-truck"></i>
+                        </div>
+                        <h5 class="card-title">Supplier Management</h5>
+                        <p class="card-text">Manage supplier relationships and contact information.</p>
+                    </div>
                 </div>
-            </div>
+            </a>
         </div>
-        <div class="col-md-2 mb-3">
-            <div class="card shadow-sm h-100">
-                <div class="card-body">
-                    <h5 class="card-title">Sales</h5>
-                    <p class="card-text">Analyze sales performance.</p>
+
+        <div class="col-md-4 col-lg-3 mb-4">
+            <a href="/revenue" class="text-decoration-none">
+                <div class="card module-card h-100 text-center">
+                    <div class="card-body">
+                        <div class="module-icon text-danger">
+                            <i class="fas fa-chart-line"></i>
+                        </div>
+                        <h5 class="card-title">Revenue Management</h5>
+                        <p class="card-text">Calculate margins, analyze sales, and generate reports.</p>
+                    </div>
                 </div>
-            </div>
+            </a>
         </div>
-        <div class="col-md-2 mb-3">
-            <div class="card shadow-sm h-100">
-                <div class="card-body">
-                    <h5 class="card-title">Accounting</h5>
-                    <p class="card-text">Track income and expenses.</p>
-                </div>
-            </div>
+    </div>
+
+    <div class="mt-5">
+        <div class="alert alert-info">
+            <i class="fas fa-info-circle me-2"></i>
+            <strong>Future Features:</strong> More features are coming soon! Stay tuned for updates.
         </div>
     </div>
 </div>

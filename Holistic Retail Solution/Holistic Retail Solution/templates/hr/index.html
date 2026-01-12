@@ -1,0 +1,83 @@
+{% extends 'base.html' %}
+{% block title %}Human Resources - Holistic Retail Solution{% endblock %}
+
+{% block content %}
+<div class="d-flex justify-content-between flex-wrap flex-md-nowrap align-items-center pt-3 pb-2 mb-3 border-bottom">
+    <h1 class="h2">Human Resources Management</h1>
+</div>
+
+<div class="row">
+    <div class="col-md-4 mb-4">
+        <div class="card module-card h-100">
+            <div class="card-body text-center">
+                <div class="module-icon text-primary">
+                    <i class="fas fa-users"></i>
+                </div>
+                <h5 class="card-title">Staff</h5>
+                <p class="card-text">Manage employee information, roles, and contact details.</p>
+                <a href="/hr/staff" class="btn btn-primary">Manage Staff</a>
+            </div>
+        </div>
+    </div>
+
+    <div class="col-md-4 mb-4">
+        <div class="card module-card h-100">
+            <div class="card-body text-center">
+                <div class="module-icon text-success">
+                    <i class="fas fa-money-bill-wave"></i>
+                </div>
+                <h5 class="card-title">Payroll</h5>
+                <p class="card-text">Process payroll, manage payments, and track compensation.</p>
+                <a href="/hr/payroll" class="btn btn-success">View Payroll</a>
+            </div>
+        </div>
+    </div>
+
+    <div class="col-md-4 mb-4">
+        <div class="card module-card h-100">
+            <div class="card-body text-center">
+                <div class="module-icon text-warning">
+                    <i class="fas fa-clock"></i>
+                </div>
+                <h5 class="card-title">Timesheets</h5>
+                <p class="card-text">Track work hours, attendance, and time management.</p>
+                <a href="/hr/timesheets" class="btn btn-warning">View Timesheets</a>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="row mt-4">
+    <div class="col-12">
+        <div class="card">
+            <div class="card-header">
+                <h5 class="mb-0">Quick Actions</h5>
+            </div>
+            <div class="card-body">
+                <div class="row">
+                    <div class="col-md-3 mb-3">
+                        <button class="btn btn-outline-primary w-100" onclick="location.href='/hr/staff'">
+                            <i class="fas fa-user-plus me-2"></i>Add Employee
+                        </button>
+                    </div>
+                    <div class="col-md-3 mb-3">
+                        <button class="btn btn-outline-success w-100" onclick="location.href='/hr/payroll'">
+                            <i class="fas fa-calculator me-2"></i>Process Payroll
+                        </button>
+                    </div>
+                    <div class="col-md-3 mb-3">
+                        <button class="btn btn-outline-info w-100" onclick="location.href='/hr/timesheets'">
+                            <i class="fas fa-calendar-check me-2"></i>Time Tracking
+                        </button>
+                    </div>
+                    <div class="col-md-3 mb-3">
+                        <button class="btn btn-outline-warning w-100">
+                            <i class="fas fa-file-alt me-2"></i>Generate Reports
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

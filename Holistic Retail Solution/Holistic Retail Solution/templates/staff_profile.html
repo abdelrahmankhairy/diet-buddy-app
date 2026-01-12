@@ -1,0 +1,87 @@
+{% extends 'base.html' %}
+{% block content %}
+<div class="row justify-content-center mt-4">
+    <div class="col-md-8">
+        <div class="card shadow mb-4">
+            <div class="card-header bg-primary text-white">
+                <h3 class="mb-0">{{ staff.name }}</h3>
+                <small>{{ staff.role }}</small>
+            </div>
+            <div class="card-body">
+                <dl class="row mb-0">
+                    <dt class="col-sm-4">Contact Info</dt>
+                    <dd class="col-sm-8">{{ staff.contact_info }}</dd>
+                    <dt class="col-sm-4">Pay</dt>
+                    <dd class="col-sm-8">${{ '%.2f'|format(staff.pay) }} ({{ staff.pay_type }})</dd>
+                    <dt class="col-sm-4">Address</dt>
+                    <dd class="col-sm-8">{{ staff.address }}</dd>
+                    <dt class="col-sm-4">Date of Birth</dt>
+                    <dd class="col-sm-8">{{ staff.dob }}</dd>
+                    <dt class="col-sm-4">Hire Date</dt>
+                    <dd class="col-sm-8">{{ staff.hire_date }}</dd>
+                </dl>
+            </div>
+            <div class="card-footer text-end">
+                <a href="/staff" class="btn btn-secondary">Back to Directory</a>
+            </div>
+        </div>
+        <!-- Weekly Hours Card -->
+        <div class="card shadow mb-4">
+            <div class="card-header bg-info text-white">
+                <h5 class="mb-0">Hours Worked This Week</h5>
+                <small>{{ start_of_week.strftime('%b %d, %Y') }} - {{ end_of_week.strftime('%b %d, %Y') }}</small>
+            </div>
+            <div class="card-body p-0">
+                <table class="table table-bordered mb-0 text-center">
+                    <thead class="table-light">
+                        <tr>
+                            {% set days = ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday', 'Sunday'] %}
+                            {% for day in days %}
+                                <th>{{ day }}</th>
+                            {% endfor %}
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            {% set hours_map = {} %}
+                            {% for wh in week_hours %}
+                                {% set hours_map = hours_map.update({wh.date.strftime('%A'): wh.hours_worked}) or hours_map %}
+                            {% endfor %}
+                            {% for i in range(7) %}
+                                {% set day_date = (start_of_week + timedelta(days=i)) %}
+                                <td>{{ hours_map.get(day_date.strftime('%A'), 0) }}</td>
+                            {% endfor %}
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+        <!-- Payroll Table Card -->
+        <div class="card shadow mb-4">
+            <div class="card-header bg-success text-white">
+                <h5 class="mb-0">Payroll History</h5>
+            </div>
+            <div class="card-body p-0">
+                <table class="table table-striped table-bordered mb-0">
+                    <thead class="table-light">
+                        <tr>
+                            <th>Pay Date</th>
+                            <th>Amount</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for p in payrolls %}
+                        <tr>
+                            <td>{{ p.pay_date.strftime('%b %d, %Y') }}</td>
+                            <td>${{ '%.2f'|format(p.amount) }}</td>
+                        </tr>
+                        {% else %}
+                        <tr><td colspan="2">No payroll records found.</td></tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

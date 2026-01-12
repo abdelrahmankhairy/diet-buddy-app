@@ -1,0 +1,166 @@
+{% extends 'base.html' %}
+{% block title %}Supplier List - Order Schedule{% endblock %}
+
+{% block content %}
+<div class="d-flex justify-content-between flex-wrap flex-md-nowrap align-items-center pt-3 pb-2 mb-3 border-bottom">
+    <h1 class="h2">Supplier List</h1>
+    <div class="btn-toolbar mb-2 mb-md-0">
+        <button class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#addSupplierModal">
+            <i class="fas fa-plus me-1"></i>Add Supplier
+        </button>
+    </div>
+</div>
+
+<!-- Supplier Cards -->
+<div class="row">
+    {% for supplier in suppliers %}
+    <div class="col-md-6 col-lg-4 mb-4">
+        <div class="card h-100">
+            <div class="card-body">
+                <div class="d-flex align-items-center mb-3">
+                    <div class="bg-info rounded-circle d-flex align-items-center justify-content-center me-3" style="width: 60px; height: 60px;">
+                        <i class="fas fa-truck text-white fa-2x"></i>
+                    </div>
+                    <div>
+                        <h5 class="card-title mb-1">{{ supplier.name }}</h5>
+                        <span class="badge bg-success">Active</span>
+                    </div>
+                </div>
+
+                <div class="mb-3">
+                    <small class="text-muted">Contact Info</small>
+                    <p class="mb-0">{{ supplier.contact_info or 'N/A' }}</p>
+                </div>
+
+                {% if supplier.email %}
+                <div class="mb-3">
+                    <small class="text-muted">Email</small>
+                    <p class="mb-0">{{ supplier.email }}</p>
+                </div>
+                {% endif %}
+
+                {% if supplier.phone %}
+                <div class="mb-3">
+                    <small class="text-muted">Phone</small>
+                    <p class="mb-0">{{ supplier.phone }}</p>
+                </div>
+                {% endif %}
+
+                <div class="d-grid gap-2">
+                    <button class="btn btn-outline-primary btn-sm" onclick="placeOrder({{ supplier.id }})">
+                        <i class="fas fa-shopping-cart me-1"></i>Place Order
+                    </button>
+                    <div class="btn-group btn-group-sm">
+                        <button class="btn btn-outline-info" title="View Products">
+                            <i class="fas fa-boxes"></i>
+                        </button>
+                        <button class="btn btn-outline-success" title="View Prices">
+                            <i class="fas fa-tags"></i>
+                        </button>
+                        <button class="btn btn-outline-warning" title="View Contracts">
+                            <i class="fas fa-file-contract"></i>
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    {% else %}
+    <div class="col-12">
+        <div class="text-center py-5">
+            <i class="fas fa-truck fa-3x text-muted mb-3"></i>
+            <h4 class="text-muted">No Suppliers Found</h4>
+            <p class="text-muted">Add your first supplier to start placing orders.</p>
+            <button class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#addSupplierModal">
+                <i class="fas fa-plus me-1"></i>Add First Supplier
+            </button>
+        </div>
+    </div>
+    {% endfor %}
+</div>
+
+<!-- Add Supplier Modal -->
+<div class="modal fade" id="addSupplierModal" tabindex="-1">
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title">Add New Supplier</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+            </div>
+            <div class="modal-body">
+                <form id="addSupplierForm">
+                    <div class="row">
+                        <div class="col-md-6 mb-3">
+                            <label for="supplierName" class="form-label">Supplier Name *</label>
+                            <input type="text" class="form-control" id="supplierName" required>
+                        </div>
+                        <div class="col-md-6 mb-3">
+                            <label for="supplierEmail" class="form-label">Email</label>
+                            <input type="email" class="form-control" id="supplierEmail">
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-md-6 mb-3">
+                            <label for="supplierPhone" class="form-label">Phone</label>
+                            <input type="tel" class="form-control" id="supplierPhone">
+                        </div>
+                        <div class="col-md-6 mb-3">
+                            <label for="supplierContact" class="form-label">Contact Person</label>
+                            <input type="text" class="form-control" id="supplierContact">
+                        </div>
+                    </div>
+                    <div class="mb-3">
+                        <label for="supplierAddress" class="form-label">Address</label>
+                        <textarea class="form-control" id="supplierAddress" rows="3"></textarea>
+                    </div>
+                    <div class="mb-3">
+                        <label for="supplierNotes" class="form-label">Notes</label>
+                        <textarea class="form-control" id="supplierNotes" rows="2" placeholder="Additional notes about the supplier..."></textarea>
+                    </div>
+                </form>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+                <button type="button" class="btn btn-primary" onclick="saveSupplier()">Save Supplier</button>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block scripts %}
+<script>
+function placeOrder(supplierId) {
+    alert('Order placement functionality coming soon for supplier ID: ' + supplierId);
+}
+
+function saveSupplier() {
+    const formData = {
+        name: document.getElementById('supplierName').value,
+        email: document.getElementById('supplierEmail').value,
+        phone: document.getElementById('supplierPhone').value,
+        contact_info: document.getElementById('supplierContact').value,
+        address: document.getElementById('supplierAddress').value
+    };
+
+    // Validate form
+    if (!formData.name) {
+        alert('Please enter a supplier name');
+        return;
+    }
+
+    // Here you would typically send the data to the server
+    console.log('Supplier data:', formData);
+
+    // Close modal and show success message
+    bootstrap.Modal.getInstance(document.getElementById('addSupplierModal')).hide();
+    alert('Supplier added successfully!');
+
+    // Reset form
+    document.getElementById('addSupplierForm').reset();
+
+    // Reload page to show new supplier
+    location.reload();
+}
+</script>
+{% endblock %}
