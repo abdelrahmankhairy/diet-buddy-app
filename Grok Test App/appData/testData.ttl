@@ -1,0 +1,79 @@
+@prefix rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#> .
+@prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#> .
+@prefix xsd: <http://www.w3.org/2001/XMLSchema#> .
+@prefix : <http://example.org/FundraisingOntology#> .
+
+# Store Instances
+:QuickMart rdf:type :Store ;
+    :hasName "QuickMart" ;
+    :hasOwner :John_Doe ;
+    :hasContact :ContactInfo1 ;
+    :hasOutletType :Convenience ;
+    :participatesInCampaign :Campaign1 .
+
+:FuelStop rdf:type :Store ;
+    :hasName "FuelStop" ;
+    :hasOwner :Jane_Smith ;
+    :hasContact :ContactInfo2 ;
+    :hasOutletType :Gas ;
+    :participatesInCampaign :Campaign2 .
+
+:FoodBasket rdf:type :Store ;
+    :hasName "FoodBasket" ;
+    :hasOwner :Alice_Johnson ;
+    :hasContact :ContactInfo3 ;
+    :hasOutletType :Grocery ;
+    :participatesInCampaign :Campaign3 .
+
+# Person Instances
+:John_Doe rdf:type :Person ;
+    :hasFirstName "John" ;
+    :hasLastName "Doe" .
+
+:Jane_Smith rdf:type :Person ;
+    :hasFirstName "Jane" ;
+    :hasLastName "Smith" .
+
+:Alice_Johnson rdf:type :Person ;
+    :hasFirstName "Alice" ;
+    :hasLastName "Johnson" .
+
+# ContactInfo Instances
+:ContactInfo1 rdf:type :ContactInfo ;
+    :hasEmail "contact@quickmart.com" ;
+    :hasPhone "555-1234" ;
+    :hasAddress :Address1 .
+
+:ContactInfo2 rdf:type :ContactInfo ;
+    :hasEmail "contact@fuelstop.com" ;
+    :hasPhone "555-5678" ;
+    :hasAddress :Address2 .
+
+:ContactInfo3 rdf:type :ContactInfo ;
+    :hasEmail "contact@foodbasket.com" ;
+    :hasPhone "555-9012" ;
+    :hasAddress :Address3 .
+
+# Address Instances
+:Address1 rdf:type :Address ;
+    :hasStreet "123 Main St" ;
+    :hasCity "Anytown" ;
+    :hasState "CA" ;
+    :hasZip "12345" .
+
+:Address2 rdf:type :Address ;
+    :hasStreet "456 Elm St" ;
+    :hasCity "Othertown" ;
+    :hasState "NY" ;
+    :hasZip "67890" .
+
+:Address3 rdf:type :Address ;
+    :hasStreet "789 Oak St" ;
+    :hasCity "Sometown" ;
+    :hasState "TX" ;
+    :hasZip "54321" .
+
+# OutletType Individuals (predefined in ontology)
+:Convenience rdf:type :OutletType .
+:Gas rdf:type :OutletType .
+:Grocery
